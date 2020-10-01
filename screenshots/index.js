@@ -17,6 +17,8 @@ module.exports = async function(context, req) {
     return;
   }
 
+  await cleanup();
+
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
@@ -24,7 +26,7 @@ module.exports = async function(context, req) {
   });
 
   try {
-    fs.mkdirSync(SCREENSHOTS_PATH);
+    await fs.promises.mkdir(SCREENSHOTS_PATH);
   } catch (error) {
     // ignore..
   }
@@ -97,15 +99,22 @@ function createZip() {
   archive.finalize();
 
   return new Promise((resolve) => {
-    output.on('close', () => {
+    output.on('close', async () => {
       console.log(archive.pointer() + ' total bytes');
       console.log('archiver has been finalized and the output file descriptor has closed.');
 
-      const stats = fs.statSync(ZIP_OUTPUT_FILE);
+      const stats = await fs.promises.stat(ZIP_OUTPUT_FILE);
       console.log(`Zip Archive: ${stats.size} bytes`);
-      const rawFile = fs.readFileSync(ZIP_OUTPUT_FILE);
+      const rawFile = await fs.promises.readFile(ZIP_OUTPUT_FILE);
       const buffer = Buffer.from(rawFile, 'base64');
       resolve(buffer);
     });
   });
+}
+
+async function cleanup() {
+  try {
+    await fs.promises.unlink(ZIP_OUTPUT_FILE);
+    await fs.promises.rmdir(SCREENSHOTS_PATH, { recursive: true });
+  } catch (error) {}
 }
