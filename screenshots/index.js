@@ -17,8 +17,6 @@ module.exports = async function(context, req) {
     return;
   }
 
-  await cleanup();
-
   const browser = await puppeteer.launch({
     headless: true,
     defaultViewport: null,
@@ -110,11 +108,4 @@ function createZip() {
       resolve(buffer);
     });
   });
-}
-
-async function cleanup() {
-  try {
-    await fs.promises.unlink(ZIP_OUTPUT_FILE);
-    await fs.promises.rmdir(SCREENSHOTS_PATH, { recursive: true });
-  } catch (error) {}
 }
