@@ -4,6 +4,7 @@
   "description": "SatNOGS Stations Screenshots Azure Function",
   "scripts": {
     "start": "func start",
+    "deploy": "func azure functionapp publish satnogs-screenshots --build remote --node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
