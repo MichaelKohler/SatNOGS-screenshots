@@ -30,14 +30,16 @@ module.exports = async function(context, req) {
   }
 
   for (let index = fromIndex; index <= toIndex; index++) {
-    console.log(`Creating screenshot for ${index}`);
+    console.log(`=== Creating screenshot for ${index} ===`);
     await screenshot(browser, index);
   }
 
+  console.log("Closing browser..");
   await browser.close();
 
   const buffer = await createZip();
 
+  console.log("Setting response buffer..");
   context.res = {
     body: buffer,
     headers: {
@@ -48,18 +50,23 @@ module.exports = async function(context, req) {
 };
 
 async function screenshot(browser, index) {
+  const url = `https://network.satnogs.org/stations/${index}/`;
+  console.log(`Opening browser and navigating to ${url}..`);
   const page = await browser.newPage();
-  await page.goto(`https://network.satnogs.org/stations/${index}/`);
+  await page.goto(url);
   await new Promise((resolve) => setTimeout(resolve, 3000));
+  console.log("Setting viewport..");
   await page.setViewport({
     width: 1200,
     height: 800,
     deviceScaleFactor: 2,
   });
+  console.log("Taking screenshot..");
   await page.screenshot({
     path: `${SCREENSHOTS_PATH}/${getPaddedNumber(index)}.jpg`,
     type: 'jpeg',
   });
+  console.log("Closing page..");
   await page.close();
 }
 
