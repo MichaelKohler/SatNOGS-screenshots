@@ -14,7 +14,7 @@
   "author": "Michael Kohler <me@michaelkohler.info>",
   "license": "MPL-2.0",
   "dependencies": {
-    "archiver": "^5.0.2",
+    "archiver": "^5.3.1",
     "puppeteer": "^5.3.0"
   }
 }
