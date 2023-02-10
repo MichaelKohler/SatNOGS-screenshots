@@ -8,8 +8,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: ⬣ ESLint
+  deploy:
+    name: 🚀 Deploy
     runs-on: ubuntu-latest
     steps:
       - name: 🛑 Cancel Previous Runs
